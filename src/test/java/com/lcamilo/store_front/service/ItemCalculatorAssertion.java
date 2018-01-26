@@ -15,8 +15,9 @@ public class ItemCalculatorAssertion extends AbstractAssert<ItemCalculatorAssert
     isNotNull();
     Integer actualDegradedBy = previousItem.getWorth() - actual.getWorth();
     org.assertj.core.api.Assertions.assertThat(actualDegradedBy).as(
-        "Item: %s's worth should be degraded by %s after update. Previous: %s, Actual: %s",
+        "Item: %s's worth should be degraded by %s after but it was degraded by %s. Previous: %s, Actual: %s",
         actual.getName(),
+        degradedBy,
         actualDegradedBy,
         previousItem.getWorth(),
         actual.getWorth())

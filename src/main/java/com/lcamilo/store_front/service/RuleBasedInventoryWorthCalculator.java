@@ -61,11 +61,11 @@ public class RuleBasedInventoryWorthCalculator implements InventoryWorthCalculat
         )
         .addRule(
             when(IS_ALCHEMY.and(SHELF_DATE_HAS_NOT_PASSED)),
-            then(incrementBy(incrementValueBy * 2, defaultMaxWorthValue))
+            then(incrementBy(incrementValueBy * 2, 100))
         )
         .addRule(
             when(IS_ALCHEMY.and(SHELF_DATE_HAS_PASSED)),
-            then(incrementBy(incrementValueBy * 4, defaultMaxWorthValue))
+            then(incrementBy(incrementValueBy * 4, 100))
         )
         .addRule(
             when(IS_HELIUM.and(SHELF_DATE_HAS_NOT_PASSED)),
