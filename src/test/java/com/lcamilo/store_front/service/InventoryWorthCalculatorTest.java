@@ -25,7 +25,7 @@ public class InventoryWorthCalculatorTest {
   @Parameters
   public static Object[] data() {
     return new Object[] {
-        //new LegacyInventoryWorthCalculator(),
+        new LegacyInventoryWorthCalculator(),
         new RuleBasedInventoryWorthCalculator()
     };
   }
