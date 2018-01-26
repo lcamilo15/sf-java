@@ -21,8 +21,8 @@ public interface CalculableItem {
     this.setShelfLife(this.getShelfLife() + shellfLife);
   }
 
-  default void incrementWorthBy(int worth) {
-    this.setWorth(this.getWorth() + worth);
+  default void incrementWorthBy(int incrementWorthBy) {
+    this.setWorth(this.getWorth() + incrementWorthBy);
   }
 
   default boolean shelfLifeHasPassed() {

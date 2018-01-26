@@ -29,7 +29,7 @@ public class LegacyInventoryWorthCalculator implements InventoryWorthCalculator 
       if (calculableItem.shelfLifeHasPassed()) {
         regularItemIncreaseBy *= 2;
       }
-      calculableItem.incrementWorthBy(regularItemIncreaseBy);
+      calculableItem.setWorth(calculableItem.getWorth() + regularItemIncreaseBy);
     }
   }
 
@@ -69,17 +69,17 @@ public class LegacyInventoryWorthCalculator implements InventoryWorthCalculator 
 
   private void applyAlchemyRule(CalculableItem calculableItem) {
     if (isAlchemy(calculableItem)) {
-      int heliumWorthValueBy = increaseWorthValueBy * 2;
+      int alchemyWorthValueBy = increaseWorthValueBy * 2;
       if (calculableItem.shelfLifeHasPassed()) {
-        heliumWorthValueBy = heliumWorthValueBy * 2;
+        alchemyWorthValueBy = increaseWorthValueBy * 4;
       }
-      calculableItem.incrementWorthBy(heliumWorthValueBy);
+      calculableItem.incrementWorthBy(alchemyWorthValueBy);
     }
   }
 
   private void applyMaxWorthValueRule(CalculableItem calculableItem) {
     if (isAlchemy(calculableItem)) {
-      calculableItem.setWorth(Math.max(calculableItem.getWorth(), 100));
+      calculableItem.setWorth(Math.min(calculableItem.getWorth(), 100));
     } else if (!isCadmium(calculableItem)){
       calculableItem.setWorth(Math.min(calculableItem.getWorth(), defaultMaxWorthValue));
     }

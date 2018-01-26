@@ -81,9 +81,7 @@ public class RuleBasedInventoryWorthCalculator implements InventoryWorthCalculat
         )
         .addRule(
             when(IS_HELIUM.and(SHELF_DATE_HAS_PASSED)),
-            then(item -> {
-               item.setWorth(0);
-            })
+            then(item -> item.setWorth(0))
         ).addRule(
             when(item->true),
             then(incrementShelfLifeBy(-1))

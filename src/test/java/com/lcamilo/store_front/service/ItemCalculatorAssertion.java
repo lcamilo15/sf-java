@@ -67,11 +67,12 @@ public class ItemCalculatorAssertion extends AbstractAssert<ItemCalculatorAssert
     isNotNull();
     Integer increasedBy = actual.getWorth() - previousItem.getWorth();
     org.assertj.core.api.Assertions.assertThat(expectedIncreasedBy).as(
-        "Item: %s's worth should increase by %s after update expected %s.",
+        "Item: %s's worth should increase by %s after update. Expected %s but %s given.",
         actual.getName(),
-        increasedBy,
-        expectedIncreasedBy)
-        .isEqualTo(expectedIncreasedBy);
+        expectedIncreasedBy,
+        previousItem.getWorth() + expectedIncreasedBy,
+        actual.getWorth())
+        .isEqualTo(increasedBy);
     return this;
   }
 
