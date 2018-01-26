@@ -13,9 +13,10 @@ public class IncrementShelfLifeAction implements Then {
   }
   @Override
   public void accept(CalculableItem calculableItem) {
-    calculableItem.incrementWorthBy(incrementBy);
+    int shelfLife = calculableItem.getShelfLife();
+    calculableItem.setShelfLife(shelfLife + incrementBy);
   }
-  public static IncrementShelfLifeAction incrementShelfLifeAction(int incrementBy) {
+  public static IncrementShelfLifeAction incrementShelfLifeBy(int incrementBy) {
     return new IncrementShelfLifeAction(incrementBy);
   }
 }

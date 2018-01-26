@@ -17,7 +17,9 @@ public class IncrementWorthByAction implements Then {
   }
   @Override
   public void accept(CalculableItem calculableItem) {
-    calculableItem.incrementWorthBy(incrementWorthBy);
+    int itemWorth = calculableItem.getWorth() + incrementWorthBy;
+    itemWorth = Math.min(Math.max(itemWorth, minValue), maxValue);
+    calculableItem.setWorth(itemWorth);
   }
   public static IncrementWorthByAction incrementBy(int incrementWorthBy, int maxValue) {
     return new IncrementWorthByAction(incrementWorthBy, 0, maxValue);

@@ -27,10 +27,10 @@ public class ItemShelfConstraint implements When {
       return shelfLife >= gt;
     });
   }
-  public static ItemShelfConstraint shelfDateLessThanOrEqualsTo(int gt) {
+  public static ItemShelfConstraint shelfDateLessThanOrEqualsTo(int lte) {
     return new ItemShelfConstraint((calculableItem)->{
       int shelfLife = calculableItem.getShelfLife();
-      return shelfLife <= gt;
+      return shelfLife <= lte;
     });
   }
 }

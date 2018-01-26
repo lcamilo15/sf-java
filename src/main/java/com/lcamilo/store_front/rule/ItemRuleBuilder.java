@@ -20,4 +20,13 @@ public class ItemRuleBuilder  {
     itemRules.add(ItemRule.create(when, then));
     return this;
   }
+  public Set<ItemRule> build() {
+    return itemRules;
+  }
+  public static When when(When when) {
+    return when;
+  }
+  public static Then then(Then then) {
+    return then;
+  }
 }
