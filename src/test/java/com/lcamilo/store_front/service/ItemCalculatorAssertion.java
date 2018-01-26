@@ -16,7 +16,7 @@ public class ItemCalculatorAssertion extends AbstractAssert<ItemCalculatorAssert
     Integer actualDegradedBy = previousItem.getWorth() - actual.getWorth();
     org.assertj.core.api.Assertions.assertThat(actualDegradedBy).as(
         "Item: %s's worth should be degraded by %s after but it was degraded by %s. Previous: %s, Actual: %s",
-        actual.getName(),
+        actual,
         degradedBy,
         actualDegradedBy,
         previousItem.getWorth(),
@@ -30,7 +30,7 @@ public class ItemCalculatorAssertion extends AbstractAssert<ItemCalculatorAssert
     Integer actualDegradedBy = previousItem.getShelfLife() - actual.getShelfLife();
     org.assertj.core.api.Assertions.assertThat(actualDegradedBy).as(
         "Item: %s's shelfLife should be degraded by %s after update but was degraded by %s.",
-        actual.getName(),
+        actual,
         degradedBy,
         actualDegradedBy)
         .isEqualTo(degradedBy);
@@ -48,7 +48,7 @@ public class ItemCalculatorAssertion extends AbstractAssert<ItemCalculatorAssert
   public ItemCalculatorAssertion worthIsNotGreaterThan(int expected) {
     org.assertj.core.api.Assertions.assertThat(actual.getWorth()).as(
         "Item: %s's worth should not be greater than %s,",
-        actual.getName(),
+        actual,
         expected
         ).isLessThanOrEqualTo(expected);
     return this;
@@ -58,7 +58,7 @@ public class ItemCalculatorAssertion extends AbstractAssert<ItemCalculatorAssert
     isNotNull();
     org.assertj.core.api.Assertions.assertThat(actual.getWorth()).as(
         "Item: %s's worth should not be negative but actual worth is %s",
-        actual.getName(),
+        actual,
         actual.getWorth())
         .isGreaterThanOrEqualTo(0);
     return this;
@@ -69,7 +69,7 @@ public class ItemCalculatorAssertion extends AbstractAssert<ItemCalculatorAssert
     Integer increasedBy = actual.getWorth() - previousItem.getWorth();
     org.assertj.core.api.Assertions.assertThat(expectedIncreasedBy).as(
         "Item: %s's worth should increase by %s after update. Expected %s but %s given.",
-        actual.getName(),
+        actual,
         expectedIncreasedBy,
         previousItem.getWorth() + expectedIncreasedBy,
         actual.getWorth())
@@ -81,7 +81,7 @@ public class ItemCalculatorAssertion extends AbstractAssert<ItemCalculatorAssert
     isNotNull();
     org.assertj.core.api.Assertions.assertThat(actual.getWorth()).as(
         "Item: %s's worth should be equals to %s.",
-        actual.getName(),
+        actual,
         actual.getWorth(),
         expected)
         .isEqualTo(expected);
