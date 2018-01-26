@@ -102,7 +102,7 @@ public class LegacyInventoryWorthCalculator implements InventoryWorthCalculator 
   }
 
   private boolean isAlchemy(CalculableItem calculableItem) {
-    return calculableItem.getName().matches("ALCHEMY IRON");
+    return calculableItem.getName().equalsIgnoreCase("ALCHEMY IRON");
   }
 
   private boolean isSpecialItem(CalculableItem calculableItem) {

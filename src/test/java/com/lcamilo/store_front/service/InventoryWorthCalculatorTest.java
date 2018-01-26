@@ -279,4 +279,32 @@ public class InventoryWorthCalculatorTest {
 
     assertThat(previousItem.getShelfLife()).isEqualTo(-10);
   }
+
+  @Test
+  public void alchemy_item_should_degrade_in_worth_twice_as_fast_as_normal() {
+    CalculableItem previousItem = ItemBuilder.anItem().withName("Alchemy Iron")
+        .withShelfLife(10)
+        .withWorth(20)
+        .build();
+
+    for (int currentDay = 0; currentDay < 10; currentDay++) {
+      CalculableItem updatedItem = inventoryWorthCalculator.updateWorth(ItemBuilder.from(previousItem).build());
+
+      //Worth of an Item is never negative
+      ItemCalculatorAssertion.assertThat(updatedItem).worthIsNotNegative();
+
+      if (updatedItem.getShelfLife() > 0) {
+        //Assert Worth Increased by 2
+        ItemCalculatorAssertion.assertThat(updatedItem).worthHasIncreased(2, previousItem);
+      } else {
+        //Assert Worth Increased by 2
+        ItemCalculatorAssertion.assertThat(updatedItem).worthHasIncreased(4, previousItem);
+      }
+
+      //Assert ShelfLife Degraded by 1
+      ItemCalculatorAssertion.assertThat(updatedItem).shelfLiveHasDegraded(1, previousItem);
+
+      previousItem = ItemBuilder.from(updatedItem).build();
+    }
+  }
 }
