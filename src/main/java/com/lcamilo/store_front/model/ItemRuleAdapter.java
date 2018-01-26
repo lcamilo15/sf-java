@@ -5,7 +5,7 @@ import com.lcamilo.other_team.model.Item;
 
 public class ItemRuleAdapter<T extends Item> implements CalculableItem  {
 
-  T item;
+  final T item;
 
   public ItemRuleAdapter(T t) {
     this.item = t;
@@ -40,7 +40,7 @@ public class ItemRuleAdapter<T extends Item> implements CalculableItem  {
   }
 
   @Override
-  public boolean equals(Object o) {
+  final public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
@@ -50,7 +50,19 @@ public class ItemRuleAdapter<T extends Item> implements CalculableItem  {
 
     ItemRuleAdapter itemWrapper = (ItemRuleAdapter) o;
 
+    if (itemWrapper.item == null && item == null) {
+      return true;
+    }
+
+    if (itemWrapper.item != null && item == null || itemWrapper.item == null) {
+      return false;
+    }
+
     if (getShelfLife() != itemWrapper.getShelfLife()) {
+      return false;
+    }
+
+    if (itemWrapper.item != item) {
       return false;
     }
 
@@ -62,10 +74,13 @@ public class ItemRuleAdapter<T extends Item> implements CalculableItem  {
   }
 
   @Override
-  public int hashCode() {
-    int result = getName() != null ? getName().hashCode() : 0;
-    result = 31 * result + getShelfLife();
-    result = 31 * result + getWorth();
+  final public int hashCode() {
+    int result = 0;
+    if (item != null) {
+      result = getName() != null ? getName().hashCode() : 0;
+      result = 31 * result + getShelfLife();
+      result = 31 * result + getWorth();
+    }
     return result;
   }
 
