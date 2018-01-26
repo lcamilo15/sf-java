@@ -2,9 +2,10 @@ package com.lcamilo.store_front.service;
 
 import com.lcamilo.store_front.model.CalculableItem;
 import com.lcamilo.store_front.rule.ItemRule;
+import com.lcamilo.store_front.rule.ItemRule.Then;
 import com.lcamilo.store_front.rule.ItemRule.When;
 import com.lcamilo.store_front.util.InventoryBuilder;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,72 +15,138 @@ import java.util.stream.Collectors;
  */
 public class RuleBasedInventoryWorthCalculator implements InventoryWorthCalculator   {
 
-  Set<ItemRule> itemRules = new HashSet<>();
+  Set<ItemRule> itemRules = new LinkedHashSet<>();
+
+  When IS_GOLD = (item)->item.getName().equalsIgnoreCase("GOLD");
+  When IS_CADMIUM = (item)->item.getName().equalsIgnoreCase("CADMIUM");
+  When IS_HELIUM = (item)->item.getName().equalsIgnoreCase("HELIUM");
+  When IS_ALCHEMY = (item)->item.getName().equalsIgnoreCase("ALCHEMY IRON");
+  When IS_SPECIAL_ITEM = IS_ALCHEMY.or(IS_HELIUM).or(IS_CADMIUM).or(IS_GOLD);
+  When IS_REGULAR_ITEM = IS_SPECIAL_ITEM.negate();
+
+  When ALWAYS = (item)-> true;
+
+  When SHELF_DATE_HAS_PASSED = (item)-> item.getShelfLife() <= 0;
+
+  Then DECREASE_SHELF_VALUE_BY_ONE = (item)-> item.setShelfLife(item.getShelfLife() - 1);
+
+  When SHELF_DATE_HAS_NOT_PASSED = SHELF_DATE_HAS_PASSED.negate();
+
+  When SHELF_DATE_BETWEEN_5_AND_10 =  (item)->item.getShelfLife() > 5 && item.getShelfLife() < 10;
+
+  When SHELF_DATE_BETWEEN_3_AND_5 =  (item)->item.getShelfLife() > 3 && item.getShelfLife() < 5;
+
+  Then DECREASE_WORTH_VALUE_BY_TWO = (item)-> item.setWorth(Math.max(item.getWorth() - 2, 0));
+
+  Then DECREASE_WORTH_VALUE_BY_ONE = (item)-> item.setWorth(Math.max(item.getWorth() - 1, 0));
+
+  Then INCREASE_WORTH_VALUE_BY_ONE = (item)-> item.setWorth(Math.max(item.getWorth() + 1, 0));
+
+  Then INCREASE_WORTH_VALUE_BY_TWO = (item)-> item.setWorth(Math.max(item.getWorth() + 2, 0));
+
+  Then INCREASE_WORTH_VALUE_BY_THREE = (item)-> item.setWorth(Math.max(item.getWorth() + 3, 0));
+
+  Then INCREASE_WORTH_VALUE_BY_FOUR = (item)-> item.setWorth(Math.max(item.getWorth() + 3, 0));
+
+  Then WORTH_VALUE_IS_NEVER_MORE_THAN_50 = (item)-> item.setWorth(Math.min(item.getWorth(), 50));
+
+  Then WORTH_IS_ALWAYS_80 = (item)-> item.setWorth(80);
+
+  Then WORTH_DROPS_TO_0 = (item)-> item.setWorth(0);
 
   public RuleBasedInventoryWorthCalculator() {
-    When IS_GOLD = (conditionalItem)->conditionalItem.getName().equalsIgnoreCase("GOLD");
-    When IS_CADMIUM = (conditionalItem)->conditionalItem.getName().equalsIgnoreCase("CADMIUM");
-    When IS_HELIUM = (conditionalItem)->conditionalItem.getName().equalsIgnoreCase("HELIUM");
-    When IS_ALCHEMY = (conditionalItem)->conditionalItem.getName().equalsIgnoreCase("ALCHEMY");
 
-    When IS_SPECIAL_ITEM = IS_ALCHEMY.or(IS_HELIUM).or(IS_CADMIUM).or(IS_GOLD);
-    When NON_SPECIAL_ITEM = IS_SPECIAL_ITEM.negate();
+    // Decrease Shelf Value
+    itemRules.add(ItemRule.create(
+        IS_REGULAR_ITEM.and(SHELF_DATE_HAS_NOT_PASSED),
+        DECREASE_WORTH_VALUE_BY_ONE
+    ));
 
-    //EACH day our system lowers both values for every item
-    ItemRule WORTH_DECREASE_RULE = ItemRule.create(
-        NON_SPECIAL_ITEM.and(item -> item.getWorth() > 0),
-        (item)-> {
-          //Once the shelf life date has passed, Worth degrades twice as fast
-          int decreaseBy = item.getShelfLife() > 0 ? 1 : 2;
-          int worth = Math.max(item.getWorth() - decreaseBy, 0);
-          item.setWorth(worth);
-        });
+    // Once the shelf life date has passed, Worth degrades twice as fast
+    itemRules.add(ItemRule.create(
+        IS_REGULAR_ITEM.and(SHELF_DATE_HAS_PASSED),
+        DECREASE_WORTH_VALUE_BY_TWO
+    ));
 
-    ItemRule SHELF_LIFE_DECREASE = ItemRule.create(
-        IS_CADMIUM.negate(),
-        (item)-> item.setShelfLife(item.getShelfLife()-1));
+    /**
+     * Alchemy
+     */
+    // "Alchemy" items degrade in Worth twice as fast as normal items
+    //For SHELF_DATE_HAS_PASSED then increase by 4
+    itemRules.add(ItemRule.create(
+        IS_ALCHEMY.and(SHELF_DATE_HAS_PASSED),
+        INCREASE_WORTH_VALUE_BY_FOUR
+    ));
 
-    //Increases in Worth the older it gets
-    ItemRule WORTH_INCREASE_RULE = ItemRule.create(
-        //"Gold" actually increases in Worth the older it gets
-        //The Worth of an item is never more than 50
-        IS_GOLD.and(item -> item.getWorth() < 50),
-        (item)-> {
-          //Once the shelf life date has passed, Worth increases twice as fast
-          int increaseBy = item.getShelfLife() > 0 ? 1 : 2;
-          //The Worth of an item is never more than 50
-          int worth = Math.min(item.getWorth() + increaseBy, 50);
-          item.setWorth(worth);
-        });
+    itemRules.add(ItemRule.create(
+        IS_ALCHEMY.and(SHELF_DATE_HAS_NOT_PASSED),
+        INCREASE_WORTH_VALUE_BY_TWO
+    ));
 
+    /**
+     * GOLD
+     */
+    // GOLD increases the older it gets
+    itemRules.add(ItemRule.create(
+        IS_GOLD.and(SHELF_DATE_HAS_NOT_PASSED),
+        INCREASE_WORTH_VALUE_BY_ONE
+    ));
+
+    // Gold increases value twice as fast once the shelf life date has passed
+    itemRules.add(ItemRule.create(
+        IS_GOLD.and(SHELF_DATE_HAS_PASSED),
+        INCREASE_WORTH_VALUE_BY_TWO
+    ));
+
+    /**
+     * Helium
+     */
     //"Helium", like gold, increases in Worth as it's ShelfLife value changes;
-    ItemRule HELIUM_RULE = ItemRule.create(
-        //The Worth of an item is never more than 50
-        IS_HELIUM.and(item -> item.getWorth() < 50),
-        (item)-> {
-          int shelfLife = item.getShelfLife();
-          int worth = 0;
-          int increaseBy = 1;
-          //Worth drops to 0 once the ShelfLife is passed
-          //By just letting worth be zero
-          if (shelfLife > 0) {
-            //Increases By 2 when there are 10 days or less
-            if (shelfLife > 5 && shelfLife < 10) {
-              increaseBy = 2;
-            }
-            //Increases By 3 when there are 5  days or less
-            else if (shelfLife > 3 && shelfLife < 5) {
-              increaseBy = 3;
-            }
-            worth = Math.min(item.getWorth() + increaseBy, 50);
-          }
-          item.setWorth(worth);
-        });
+    itemRules.add(ItemRule.create(
+        IS_HELIUM.and(SHELF_DATE_BETWEEN_5_AND_10.negate()).and(SHELF_DATE_BETWEEN_3_AND_5.negate()),
+        INCREASE_WORTH_VALUE_BY_THREE
+    ));
 
-    itemRules.add(SHELF_LIFE_DECREASE);
-    itemRules.add(WORTH_DECREASE_RULE);
-    itemRules.add(WORTH_INCREASE_RULE);
-    itemRules.add(HELIUM_RULE);
+
+    //Increases By 2 when there are 10 days or less
+    itemRules.add(ItemRule.create(
+        IS_HELIUM.and(SHELF_DATE_BETWEEN_5_AND_10),
+        INCREASE_WORTH_VALUE_BY_TWO
+    ));
+
+    //Increases By 3 when there are 5  days or less
+    itemRules.add(ItemRule.create(
+        IS_HELIUM.and(SHELF_DATE_BETWEEN_3_AND_5),
+        INCREASE_WORTH_VALUE_BY_THREE
+    ));
+
+    //Worth drops to 0 once the ShelfLife is passed
+    itemRules.add(ItemRule.create(
+        IS_HELIUM.and(SHELF_DATE_HAS_PASSED),
+        WORTH_DROPS_TO_0
+    ));
+
+
+    //The Worth of an item is never more than 50
+    itemRules.add(ItemRule.create(
+        IS_CADMIUM.negate(),
+        WORTH_VALUE_IS_NEVER_MORE_THAN_50
+    ));
+
+    /**
+     * CADIUM
+     */
+    //"Cadmium" is rare, has a worth of 80, and will never decrease in Worth
+    itemRules.add(ItemRule.create(
+        IS_CADMIUM,
+        WORTH_IS_ALWAYS_80
+    ));
+
+    itemRules.add(ItemRule.create(
+        ALWAYS,
+        DECREASE_SHELF_VALUE_BY_ONE
+    ));
+
   }
 
   @Override

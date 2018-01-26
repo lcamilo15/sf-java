@@ -15,10 +15,10 @@ import org.junit.runners.Parameterized.Parameters;
  * Created by luiscamilo on 1/21/18
  */
 @RunWith(Parameterized.class)
-public class LegacyInventoryWorthCalculatorTest {
+public class InventoryWorthCalculatorTest {
   InventoryWorthCalculator inventoryWorthCalculator;
 
-  public LegacyInventoryWorthCalculatorTest(InventoryWorthCalculator inventoryWorthCalculator) {
+  public InventoryWorthCalculatorTest(InventoryWorthCalculator inventoryWorthCalculator) {
     this.inventoryWorthCalculator = inventoryWorthCalculator;
   }
 
@@ -189,7 +189,7 @@ public class LegacyInventoryWorthCalculatorTest {
       ItemCalculatorAssertion.assertThat(updatedItem).worthHasIncreased(0, previousItem);
 
       //Assert ShelfLife Degraded by 1
-      ItemCalculatorAssertion.assertThat(updatedItem).shelfLiveHasDegraded(0, previousItem);
+      ItemCalculatorAssertion.assertThat(updatedItem).shelfLiveHasDegraded(1, previousItem);
 
       previousItem = ItemBuilder.from(updatedItem).build();
     }

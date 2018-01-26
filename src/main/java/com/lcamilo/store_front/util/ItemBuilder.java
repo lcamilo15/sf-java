@@ -1,7 +1,7 @@
 package com.lcamilo.store_front.util;
 
 import com.lcamilo.store_front.model.CalculableItem;
-import com.lcamilo.store_front.model.ItemWrapper;
+import com.lcamilo.store_front.model.ItemRuleAdapter;
 import com.lcamilo.store_front.util.Builder.ParentAwareBuilder;
 
 /**
@@ -40,7 +40,7 @@ public class ItemBuilder extends ParentAwareBuilder<CalculableItem, InventoryBui
   }
 
   public CalculableItem build() {
-    ItemWrapper item = new ItemWrapper();
+    ItemRuleAdapter item = new ItemRuleAdapter();
     item.setName(Name);
     item.setShelfLife(ShelfLife);
     item.setWorth(Worth);

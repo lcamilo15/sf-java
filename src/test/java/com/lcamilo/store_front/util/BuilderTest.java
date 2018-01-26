@@ -3,7 +3,7 @@ package com.lcamilo.store_front.util;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.lcamilo.store_front.model.CalculableItem;
-import com.lcamilo.store_front.model.ItemWrapper;
+import com.lcamilo.store_front.model.ItemRuleAdapter;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class BuilderTest {
 
   @BeforeEach
   public void setup() {
-    expedtedBuiltItem = new ItemWrapper<>();
+    expedtedBuiltItem = new ItemRuleAdapter<>();
     expedtedBuiltItem.setName("NAME");
     expedtedBuiltItem.setWorth(10);
     expedtedBuiltItem.setShelfLife(10);

@@ -3,15 +3,15 @@ package com.lcamilo.store_front.model;
 import com.lcamilo.other_team.model.Item;
 
 
-public class ItemWrapper<T extends Item> implements CalculableItem  {
+public class ItemRuleAdapter<T extends Item> implements CalculableItem  {
 
   T item;
 
-  public ItemWrapper(T t) {
+  public ItemRuleAdapter(T t) {
     this.item = t;
   }
 
-  public ItemWrapper() {
+  public ItemRuleAdapter() {
     this.item = (T) new Item();
   }
 
@@ -44,11 +44,11 @@ public class ItemWrapper<T extends Item> implements CalculableItem  {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ItemWrapper)) {
+    if (!(o instanceof ItemRuleAdapter)) {
       return false;
     }
 
-    ItemWrapper itemWrapper = (ItemWrapper) o;
+    ItemRuleAdapter itemWrapper = (ItemRuleAdapter) o;
 
     if (getShelfLife() != itemWrapper.getShelfLife()) {
       return false;

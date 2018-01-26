@@ -46,7 +46,7 @@ public class ItemCalculatorAssertion extends AbstractAssert<ItemCalculatorAssert
 
   public ItemCalculatorAssertion worthIsNotGreaterThan(int expected) {
     org.assertj.core.api.Assertions.assertThat(actual.getWorth()).as(
-        "Item: %s's worth should not be greater than %s",
+        "Item: %s's worth should not be greater than %s,",
         actual.getName(),
         expected
         ).isLessThanOrEqualTo(expected);
