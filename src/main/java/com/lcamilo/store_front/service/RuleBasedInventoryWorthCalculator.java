@@ -1,5 +1,9 @@
 package com.lcamilo.store_front.service;
 
+import static com.lcamilo.store_front.rule.predicates.ItemMatchName.itemNameMatches;
+import static com.lcamilo.store_front.rule.predicates.ItemShelfConstraint.shelfDateBetween;
+import static com.lcamilo.store_front.rule.predicates.ItemShelfConstraint.shelfDateLessThanOrEqualsTo;
+
 import com.lcamilo.store_front.model.CalculableItem;
 import com.lcamilo.store_front.rule.ItemRule;
 import com.lcamilo.store_front.rule.ItemRule.Then;
@@ -13,28 +17,28 @@ import java.util.stream.Collectors;
 /**
  * Created by luiscamilo on 1/21/18
  */
-public class RuleBasedInventoryWorthCalculator implements InventoryWorthCalculator   {
+public class RuleBasedInventoryWorthCalculator implements InventoryWorthCalculator {
 
   Set<ItemRule> itemRules = new LinkedHashSet<>();
 
-  When IS_GOLD = (item)->item.getName().equalsIgnoreCase("GOLD");
-  When IS_CADMIUM = (item)->item.getName().equalsIgnoreCase("CADMIUM");
-  When IS_HELIUM = (item)->item.getName().equalsIgnoreCase("HELIUM");
-  When IS_ALCHEMY = (item)->item.getName().equalsIgnoreCase("ALCHEMY IRON");
+  When IS_GOLD = itemNameMatches("GOLD");
+  When IS_CADMIUM = itemNameMatches("CADMIUM");
+  When IS_HELIUM = itemNameMatches("HELIUM");
+  When IS_ALCHEMY = itemNameMatches("ALCHEMY IRON");
   When IS_SPECIAL_ITEM = IS_ALCHEMY.or(IS_HELIUM).or(IS_CADMIUM).or(IS_GOLD);
   When IS_REGULAR_ITEM = IS_SPECIAL_ITEM.negate();
 
   When ALWAYS = (item)-> true;
 
-  When SHELF_DATE_HAS_PASSED = (item)-> item.getShelfLife() <= 0;
+  When SHELF_DATE_HAS_PASSED = shelfDateLessThanOrEqualsTo(0);
 
   Then DECREASE_SHELF_VALUE_BY_ONE = (item)-> item.setShelfLife(item.getShelfLife() - 1);
 
   When SHELF_DATE_HAS_NOT_PASSED = SHELF_DATE_HAS_PASSED.negate();
 
-  When SHELF_DATE_BETWEEN_5_AND_10 =  (item)->item.getShelfLife() > 5 && item.getShelfLife() < 10;
+  When SHELF_DATE_BETWEEN_5_AND_10 = shelfDateBetween(5, 10);
 
-  When SHELF_DATE_BETWEEN_3_AND_5 =  (item)->item.getShelfLife() > 3 && item.getShelfLife() < 5;
+  When SHELF_DATE_BETWEEN_1_AND_5 = shelfDateBetween(1, 5);
 
   Then DECREASE_WORTH_VALUE_BY_TWO = (item)-> item.setWorth(Math.max(item.getWorth() - 2, 0));
 
@@ -103,7 +107,7 @@ public class RuleBasedInventoryWorthCalculator implements InventoryWorthCalculat
      */
     //"Helium", like gold, increases in Worth as it's ShelfLife value changes;
     itemRules.add(ItemRule.create(
-        IS_HELIUM.and(SHELF_DATE_BETWEEN_5_AND_10.negate()).and(SHELF_DATE_BETWEEN_3_AND_5.negate()),
+        IS_HELIUM.and(SHELF_DATE_BETWEEN_5_AND_10.negate()).and(SHELF_DATE_BETWEEN_1_AND_5.negate()),
         INCREASE_WORTH_VALUE_BY_THREE
     ));
 
@@ -116,7 +120,7 @@ public class RuleBasedInventoryWorthCalculator implements InventoryWorthCalculat
 
     //Increases By 3 when there are 5  days or less
     itemRules.add(ItemRule.create(
-        IS_HELIUM.and(SHELF_DATE_BETWEEN_3_AND_5),
+        IS_HELIUM.and(SHELF_DATE_BETWEEN_1_AND_5),
         INCREASE_WORTH_VALUE_BY_THREE
     ));
 

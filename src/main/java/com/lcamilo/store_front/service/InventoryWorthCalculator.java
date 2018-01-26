@@ -7,7 +7,9 @@ import java.util.List;
  * Created by luiscamilo on 1/21/18
  */
 public interface InventoryWorthCalculator {
-  public List<CalculableItem> updateInventoryWorth(List<CalculableItem> items);
-  public CalculableItem updateWorth(CalculableItem item);
+
+  List<CalculableItem> updateInventoryWorth(List<CalculableItem> items);
+
+  CalculableItem updateWorth(CalculableItem item);
 
 }

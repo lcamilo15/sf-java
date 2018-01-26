@@ -89,27 +89,27 @@ public class LegacyInventoryWorthCalculator implements InventoryWorthCalculator 
     calculableItem.setWorth(Math.max(calculableItem.getWorth(), 0));
   }
 
-  public boolean isGold(CalculableItem calculableItem) {
+  private boolean isGold(CalculableItem calculableItem) {
     return calculableItem.getName().equalsIgnoreCase("GOLD");
   }
 
-  public boolean isHelium(CalculableItem calculableItem) {
+  private boolean isHelium(CalculableItem calculableItem) {
     return calculableItem.getName().equalsIgnoreCase("HELIUM");
   }
 
-  public boolean isCadmium(CalculableItem calculableItem) {
+  private boolean isCadmium(CalculableItem calculableItem) {
     return calculableItem.getName().equalsIgnoreCase("CADMIUM");
   }
 
-  public boolean isAlchemy(CalculableItem calculableItem) {
+  private boolean isAlchemy(CalculableItem calculableItem) {
     return calculableItem.getName().matches("ALCHEMY IRON");
   }
 
-  public boolean isSpecialItem(CalculableItem calculableItem) {
+  private boolean isSpecialItem(CalculableItem calculableItem) {
     return isGold(calculableItem) || isHelium(calculableItem) || isCadmium(calculableItem) || isAlchemy(calculableItem);
   }
 
-  public boolean isRegularItem(CalculableItem calculableItem) {
+  private boolean isRegularItem(CalculableItem calculableItem) {
     return ! isSpecialItem(calculableItem);
   }
 

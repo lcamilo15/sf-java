@@ -4,17 +4,18 @@ package com.lcamilo.store_front.model;
  * Created by luiscamilo on 1/21/18
  */
 public interface CalculableItem {
-  public String getName();
 
-  public void setName(String name);
+  String getName();
 
-  public int getShelfLife();
+  void setName(String name);
 
-  public void setShelfLife(int shelfLife);
+  int getShelfLife();
 
-  public int getWorth();
+  void setShelfLife(int shelfLife);
 
-  public void setWorth(int worth);
+  int getWorth();
+
+  void setWorth(int worth);
 
   default void incrementShelfLifeBy(int shellfLife) {
     this.setShelfLife(this.getShelfLife() + shellfLife);
