@@ -12,7 +12,7 @@ public class ItemRuleAdapter<T extends Item> implements CalculableItem  {
   }
 
   public ItemRuleAdapter() {
-    this.item = (T) new Item();
+    this((T) new Item());
   }
 
   public String getName() {
