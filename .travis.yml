@@ -5,3 +5,6 @@ addons:
     packages:
       - oracle-java8-installer
 script: mvn clean verify
+
+after_success:
+  -  mvn clean test jacoco:report coveralls:report
